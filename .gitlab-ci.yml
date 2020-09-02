@@ -13,6 +13,7 @@ variables:
   variables:
     STACK: ${PROJECT_PARENT_NAME}
     SERVICES_TO_CHECK: ${PROJECT_PARENT_NAME}_${CI_PROJECT_NAME}
+    STATUS_CHECK_DELAY: 30
 
 .deploy-development:
   variables:
