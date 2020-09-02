@@ -1,0 +1,65 @@
+version: '3.5'
+
+services:
+  gitlab-runner-registrar:
+    image: ${IMAGE_NAME}:${IMAGE_TAG}
+    entrypoint: /bin/sh
+    command: >
+      -c "
+        gitlab-runner unregister --name \"${RUNNER_NAME}\";
+        gitlab-runner register"
+    environment:
+      CONFIG_FILE:
+      CI_SERVER_URL:
+      REGISTRATION_TOKEN:
+      REGISTER_NON_INTERACTIVE:
+      REGISTER_LOCKED:
+      REGISTER_RUN_UNTAGGED:
+      RUNNER_NAME:
+      RUNNER_TAG_LIST:
+      RUNNER_LIMIT:
+      RUNNER_REQUEST_CONCURRENCY:
+      RUNNER_OUTPUT_LIMIT:
+      RUNNER_EXECUTOR:
+      RUNNER_ENV:
+      CACHE_TYPE:
+      CACHE_SHARED:
+      CACHE_S3_SERVER_ADDRESS:
+      CACHE_S3_INSECURE:
+      CACHE_S3_ACCESS_KEY:
+      CACHE_S3_SECRET_KEY:
+      CACHE_S3_BUCKET_NAME:
+      DOCKER_IMAGE:
+      DOCKER_PRIVILEGED:
+      DOCKER_DISABLE_CACHE:
+      DOCKER_SHM_SIZE:
+      DOCKER_MEMORY:
+      DOCKER_MEMORY_RESERVATION:
+      DOCKER_CPUS:
+      DOCKER_TLS_VERIFY: ${RUNNER_DOCKER_TLS_VERIFY}
+    networks:
+      gitlab-net:
+    volumes:
+      - config-vol:/etc/gitlab-runner
+      - work-vol:/home/gitlab-runner
+    deploy:
+      mode: replicated
+      replicas: ${REPLICAS:-1}
+      restart_policy:
+        condition: on-failure
+        delay: ${RESTART_DELAY:-5s}
+      update_config:
+        delay: ${UPDATE_DELAY:-1m}
+      resources:
+        limits:
+          cpus: '${RESOURCES_LIMITS_CPUS:-0.1}'
+          memory: ${RESOURCES_LIMITS_MEMORY:-8M}
+        reservations:
+          cpus: '${RESOURCES_RESERVATIONS_CPUS:-0.001}'
+          memory: ${RESOURCES_RESERVATIONS_MEMORY:-4M}
+
+networks:
+  gitlab-net:
+    name: ${GITLAB_NET_NAME}
+    driver: ${GITLAB_NET_DRIVER}
+    attachable: ${GITLAB_NET_ATTACHABLE:-true}
