@@ -1,5 +1,12 @@
 version: '3.5'
 
+services:
+  gitlab-runner-registrar:
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == ${PLACEMENT_CONSTRAINTS_NODE_HOSTNAME}
+
 volumes:
   config-vol:
     name: ${CONFIG_VOL_NAME}
