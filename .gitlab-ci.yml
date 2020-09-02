@@ -1,0 +1,130 @@
+include:
+  - project: 'redmic-project/gitlab-ci-templates'
+    ref: master
+    file: '/deployment.yml'
+
+stages:
+  - deploy
+
+variables:
+  PROJECT_PARENT_NAME: gitlab
+
+.deploy:
+  variables:
+    STACK: ${PROJECT_PARENT_NAME}
+    SERVICES_TO_CHECK: ${PROJECT_PARENT_NAME}_${CI_PROJECT_NAME}
+
+.deploy-development:
+  variables:
+    COMPOSE_FILE: docker-compose.${CI_PROJECT_NAME}.tmpl.yml:docker-compose.${CI_PROJECT_NAME}.dev.yml
+  environment:
+    name: dev/${CI_PROJECT_NAME}
+
+.deploy-production:
+  variables:
+    COMPOSE_FILE: docker-compose.${CI_PROJECT_NAME}.tmpl.yml:docker-compose.${CI_PROJECT_NAME}.prod.yml
+  environment:
+    name: pro/${CI_PROJECT_NAME}
+
+.deploy-registrar:
+  variables: &deploy-registrar-variables
+    SERVICES_TO_CHECK: ${PROJECT_PARENT_NAME}_${CI_PROJECT_NAME}-registrar
+
+.deploy-registrar-development:
+  extends: .deploy-development
+  variables:
+    COMPOSE_FILE: docker-compose.${CI_PROJECT_NAME}-registrar.tmpl.yml:docker-compose.${CI_PROJECT_NAME}-registrar.dev.yml
+    <<: *deploy-registrar-variables
+
+.deploy-registrar-grafcan-gitlab-es-development:
+  extends: .deploy-registrar-development
+  environment:
+    name: dev/${CI_PROJECT_NAME}-registrar-grafcan-gitlab-es
+
+.deploy-registrar-gitlab-com-development:
+  extends: .deploy-registrar-development
+  environment:
+    name: dev/${CI_PROJECT_NAME}-registrar-gitlab-com
+
+.deploy-registrar-production:
+  extends: .deploy-production
+  variables:
+    COMPOSE_FILE: docker-compose.${CI_PROJECT_NAME}-registrar.tmpl.yml:docker-compose.${CI_PROJECT_NAME}-registrar.prod.yml
+    <<: *deploy-registrar-variables
+
+.deploy-registrar-grafcan-gitlab-es-production:
+  extends: .deploy-registrar-production
+  environment:
+    name: pro/${CI_PROJECT_NAME}-registrar-grafcan-gitlab-es
+
+.deploy-registrar-gitlab-com-production:
+  extends: .deploy-registrar-production
+  environment:
+    name: pro/${CI_PROJECT_NAME}-registrar-gitlab-com
+
+.deploy-registrar-support-branch: &deploy-registrar-support-branch
+  rules:
+    - if: $CI_MERGE_REQUEST_ID ||
+          $CI_COMMIT_TAG ||
+          $CI_PIPELINE_SOURCE == "schedule" ||
+          $CI_COMMIT_BRANCH == "master"
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      when: manual
+      allow_failure: true
+
+deploy-registrar-grafcan-gitlab-es-support-branch-development:
+  extends: .deploy-registrar-grafcan-gitlab-es-development
+  <<: *deploy-registrar-support-branch
+
+deploy-registrar-gitlab-com-support-branch-development:
+  extends: .deploy-registrar-gitlab-com-development
+  <<: *deploy-registrar-support-branch
+
+.deploy-registrar-stable-branch: &deploy-registrar-stable-branch
+  rules:
+    - if: $CI_MERGE_REQUEST_ID ||
+          $CI_COMMIT_TAG ||
+          $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+      allow_failure: true
+
+deploy-registrar-grafcan-gitlab-es-stable-branch-development:
+  extends: .deploy-registrar-grafcan-gitlab-es-development
+  <<: *deploy-registrar-stable-branch
+
+deploy-registrar-gitlab-com-stable-branch-development:
+  extends: .deploy-registrar-gitlab-com-development
+  <<: *deploy-registrar-stable-branch
+
+deploy-registrar-grafcan-gitlab-es-stable-branch-production:
+  extends: .deploy-registrar-grafcan-gitlab-es-production
+  <<: *deploy-registrar-stable-branch
+
+deploy-registrar-gitlab-com-stable-branch-production:
+  extends: .deploy-registrar-gitlab-com-production
+  <<: *deploy-registrar-stable-branch
+
+.deploy-registrar-tag: &deploy-registrar-tag
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: manual
+      allow_failure: true
+
+deploy-registrar-grafcan-gitlab-es-tag-development:
+  extends: .deploy-registrar-grafcan-gitlab-es-development
+  <<: *deploy-registrar-tag
+
+deploy-registrar-gitlab-com-tag-development:
+  extends: .deploy-registrar-gitlab-com-development
+  <<: *deploy-registrar-tag
+
+deploy-registrar-grafcan-gitlab-es-tag-production:
+  extends: .deploy-registrar-grafcan-gitlab-es-production
+  <<: *deploy-registrar-tag
+
+deploy-registrar-gitlab-com-tag-production:
+  extends: .deploy-registrar-gitlab-com-production
+  <<: *deploy-registrar-tag

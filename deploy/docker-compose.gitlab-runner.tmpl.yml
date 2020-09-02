@@ -1,0 +1,33 @@
+version: '3.5'
+
+services:
+  gitlab-runner:
+    image: ${IMAGE_NAME}:${IMAGE_TAG}
+    environment:
+      CONFIG_FILE:
+    networks:
+      gitlab-net:
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - config-vol:/etc/gitlab-runner
+      - work-vol:/home/gitlab-runner
+    deploy:
+      mode: replicated
+      replicas: ${REPLICAS:-1}
+      restart_policy:
+        delay: ${RESTART_DELAY:-5s}
+      update_config:
+        delay: ${UPDATE_DELAY:-1m}
+      resources:
+        limits:
+          cpus: '${RESOURCES_LIMITS_CPUS:-0.1}'
+          memory: ${RESOURCES_LIMITS_MEMORY:-32M}
+        reservations:
+          cpus: '${RESOURCES_RESERVATIONS_CPUS:-0.001}'
+          memory: ${RESOURCES_RESERVATIONS_MEMORY:-16M}
+
+networks:
+  gitlab-net:
+    name: ${GITLAB_NET_NAME}
+    driver: ${GITLAB_NET_DRIVER}
+    external: true

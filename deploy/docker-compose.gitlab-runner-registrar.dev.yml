@@ -1,0 +1,8 @@
+version: '3.5'
+
+volumes:
+  config-vol:
+    name: ${CONFIG_VOL_NAME}
+
+  work-vol:
+    name: ${WORK_VOL_NAME}
