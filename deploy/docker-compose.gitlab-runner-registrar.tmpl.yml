@@ -3,7 +3,11 @@ version: '3.5'
 services:
   gitlab-runner-registrar:
     image: ${IMAGE_NAME}:${IMAGE_TAG}
-    command: register
+    entrypoint: /bin/sh
+    command: >
+      -c "
+        gitlab-runner unregister --name \"${RUNNER_NAME}\";
+        gitlab-runner register"
     environment:
       CONFIG_FILE:
       CI_SERVER_URL:
