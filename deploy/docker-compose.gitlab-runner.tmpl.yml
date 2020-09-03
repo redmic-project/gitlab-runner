@@ -24,7 +24,7 @@ services:
           memory: ${RESOURCES_LIMITS_MEMORY:-32M}
         reservations:
           cpus: '${RESOURCES_RESERVATIONS_CPUS:-0.001}'
-          memory: ${RESOURCES_RESERVATIONS_MEMORY:-16M}
+          memory: ${RESOURCES_RESERVATIONS_MEMORY:-8M}
 
 networks:
   gitlab-net:
