@@ -6,8 +6,6 @@ Deployment of a service to run GitLab CI/CD workloads
 
 At first time, you must deploy `gitlab-runner-registrar` to configure and register a new runner instance. Then, deploy `gitlab-runner` (launching default deployment jobs) to receive jobs to run.
 
-You must tell to your GitLab instance to use Docker in TLS mode before launching your jobs. Set `DOCKER_HOST=tcp://docker:2376` into your parent group or project.
-
 ## Delete old runners
 
 Service will try to unregister old version of same runner being registered, before creating the new one.
