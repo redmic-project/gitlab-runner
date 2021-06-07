@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.8'
 
 services:
   gitlab-runner:
@@ -25,6 +25,10 @@ services:
         reservations:
           cpus: '${RESOURCES_RESERVATIONS_CPUS:-0.001}'
           memory: ${RESOURCES_RESERVATIONS_MEMORY:-32M}
+
+volumes:
+  work-vol:
+    name: ${WORK_VOL_NAME}
 
 networks:
   gitlab-net:

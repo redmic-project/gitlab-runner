@@ -1,15 +1,9 @@
-version: '3.5'
-
-services:
-  gitlab-runner-registrar:
-    deploy:
-      placement:
-        constraints:
-          - node.hostname == ${PLACEMENT_CONSTRAINTS_NODE_HOSTNAME}
+version: '3.8'
 
 volumes:
   config-vol:
     name: ${CONFIG_VOL_NAME}
-
-  work-vol:
-    name: ${WORK_VOL_NAME}
+    driver_opts:
+      type: ${VOL_TYPE}
+      o: addr=${VOL_ADDR},${VOL_OPTIONS}
+      device: ${VOL_DEVICE}
