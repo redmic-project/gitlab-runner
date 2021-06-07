@@ -9,6 +9,11 @@ stages:
 variables:
   PROJECT_PARENT_NAME: gitlab
 
+.lock-job: &lock-job
+  rules:
+    - if: $CI
+      when: never
+
 .deploy:
   variables:
     STACK: ${PROJECT_PARENT_NAME}
@@ -26,6 +31,9 @@ variables:
     COMPOSE_FILE: docker-compose.${CI_PROJECT_NAME}.tmpl.yml:docker-compose.${CI_PROJECT_NAME}.prod.yml
   environment:
     name: pro/${CI_PROJECT_NAME}
+
+deploy-stable-branch-production:
+  <<: *lock-job
 
 .deploy-registrar:
   variables: &deploy-registrar-variables
@@ -103,10 +111,12 @@ deploy-registrar-gitlab-com-stable-branch-development:
 deploy-registrar-grafcan-gitlab-es-stable-branch-production:
   extends: .deploy-registrar-grafcan-gitlab-es-production
   <<: *deploy-registrar-stable-branch
+  <<: *lock-job
 
 deploy-registrar-gitlab-com-stable-branch-production:
   extends: .deploy-registrar-gitlab-com-production
   <<: *deploy-registrar-stable-branch
+  <<: *lock-job
 
 .deploy-registrar-tag: &deploy-registrar-tag
   rules:
@@ -125,7 +135,9 @@ deploy-registrar-gitlab-com-tag-development:
 deploy-registrar-grafcan-gitlab-es-tag-production:
   extends: .deploy-registrar-grafcan-gitlab-es-production
   <<: *deploy-registrar-tag
+  <<: *lock-job
 
 deploy-registrar-gitlab-com-tag-production:
   extends: .deploy-registrar-gitlab-com-production
   <<: *deploy-registrar-tag
+  <<: *lock-job
