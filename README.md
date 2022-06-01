@@ -18,7 +18,7 @@ gitlab-runner unregister --url http://gitlab.example.com/ --token t0k3n
 
 # Remove one runner, by runner name
 gitlab-runner unregister --name test-runner
-￼
+
 # Remove only broken runners
 gitlab-runner verify --delete
 
