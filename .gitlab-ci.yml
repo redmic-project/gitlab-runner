@@ -6,9 +6,6 @@ include:
 stages:
   - deploy
 
-variables:
-  PROJECT_PARENT_NAME: gitlab
-
 .lock-job: &lock-job
   rules:
     - if: $CI
@@ -16,8 +13,7 @@ variables:
 
 .deploy:
   variables:
-    STACK: ${PROJECT_PARENT_NAME}
-    SERVICES_TO_CHECK: ${PROJECT_PARENT_NAME}_${CI_PROJECT_NAME}
+    STACK: gitlab
     STATUS_CHECK_DELAY: 30
 
 .deploy-development:
@@ -35,15 +31,10 @@ variables:
 deploy-stable-branch-production:
   <<: *lock-job
 
-.deploy-registrar:
-  variables: &deploy-registrar-variables
-    SERVICES_TO_CHECK: ${PROJECT_PARENT_NAME}_${CI_PROJECT_NAME}-registrar
-
 .deploy-registrar-development:
   extends: .deploy-development
   variables:
     COMPOSE_FILE: docker-compose.${CI_PROJECT_NAME}-registrar.tmpl.yml:docker-compose.${CI_PROJECT_NAME}-registrar.dev.yml
-    <<: *deploy-registrar-variables
 
 .deploy-registrar-grafcan-gitlab-es-development:
   extends: .deploy-registrar-development
@@ -59,7 +50,6 @@ deploy-stable-branch-production:
   extends: .deploy-production
   variables:
     COMPOSE_FILE: docker-compose.${CI_PROJECT_NAME}-registrar.tmpl.yml:docker-compose.${CI_PROJECT_NAME}-registrar.prod.yml
-    <<: *deploy-registrar-variables
 
 .deploy-registrar-grafcan-gitlab-es-production:
   extends: .deploy-registrar-production
