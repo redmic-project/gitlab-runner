@@ -31,6 +31,9 @@ stages:
 deploy-stable-branch-production:
   <<: *lock-job
 
+deploy-tag-production:
+  <<: *lock-job
+
 .deploy-registrar-development:
   extends: .deploy-development
   variables:
