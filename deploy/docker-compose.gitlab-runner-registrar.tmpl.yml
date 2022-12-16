@@ -7,14 +7,17 @@ services:
     command: >
       -c "
         gitlab-runner unregister --name \"${RUNNER_NAME}\";
-        gitlab-runner register"
+        gitlab-runner register";
+        sed -i \"s/concurrent.*/concurrent = ${CONCURRENT}/\" ${CONFIG_FILE}
     environment:
       CONFIG_FILE:
+      LOG_LEVEL:
       CI_SERVER_URL:
       REGISTRATION_TOKEN:
       REGISTER_NON_INTERACTIVE:
       REGISTER_LOCKED:
       REGISTER_RUN_UNTAGGED:
+      REGISTER_MAXIMUM_TIMEOUT:
       RUNNER_NAME:
       RUNNER_TAG_LIST:
       RUNNER_LIMIT:
@@ -24,6 +27,7 @@ services:
       RUNNER_ENV:
       DOCKER_IMAGE:
       DOCKER_PRIVILEGED:
+      DOCKER_OOM_KILL_DISABLE:
       DOCKER_DISABLE_CACHE:
       DOCKER_VOLUMES:
       DOCKER_NETWORK_MODE:
