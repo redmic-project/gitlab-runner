@@ -3,6 +3,7 @@ version: '3.9'
 services:
   gitlab-dind:
     image: docker:${DIND_IMAGE_TAG}
+    command: --tls=false
     environment:
       DOCKER_TLS_CERTDIR: ""
     networks:
@@ -13,7 +14,7 @@ services:
       - SYS_ADMIN
       - NET_ADMIN
     security_opt:
-      - seccomp=unconfined
+      - apparmor:unconfined
     deploy:
       mode: replicated
       replicas: ${DIND_REPLICAS:-1}
