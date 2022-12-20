@@ -13,7 +13,7 @@ services:
       - SYS_ADMIN
       - NET_ADMIN
     security_opt:
-      - apparmor=unconfined
+      - seccomp=unconfined
     deploy:
       mode: replicated
       replicas: ${DIND_REPLICAS:-1}
