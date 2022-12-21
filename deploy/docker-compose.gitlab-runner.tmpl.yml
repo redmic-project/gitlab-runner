@@ -31,7 +31,6 @@ services:
     image: ${IMAGE_NAME}:${IMAGE_TAG}
     environment:
       CONFIG_FILE:
-      DOCKER_HOST:
     networks:
       gitlab-net:
     volumes:
