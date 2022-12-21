@@ -46,8 +46,8 @@ services:
     networks:
       gitlab-net:
     volumes:
-      - config-vol:/etc/gitlab-runner
-      - work-vol:/home/gitlab-runner
+      - config-vol:${CONFIG_DIR}
+      - work-vol:${WORK_DIR}
     deploy:
       mode: replicated
       replicas: ${REPLICAS:-1}
