@@ -3,12 +3,13 @@ version: '3.9'
 services:
   gitlab-runner:
     image: ${IMAGE_NAME}:${IMAGE_TAG}
-    entrypoint:
-      - docker network create ${GITLAB_NET_NAME} || true
-      - >
+    entrypoint: /bin/sh
+    command: >
+      -c "
+        docker network create ${GITLAB_NET_NAME} || true;
         docker run --rm -d
           --name gitlab-dind
-          -e DOCKER_TLS_CERTDIR=""
+          -e DOCKER_TLS_CERTDIR=''
           -v gitlab-runner-dind-vol:/var/lib/docker
           --network ${GITLAB_NET_NAME}
           --privileged
@@ -17,13 +18,12 @@ services:
           --memory ${DIND_MEMORY:-4G}
           --memory-reservation ${DIND_MEMORY_RESERVATION:-1G}
           docker:${DIND_IMAGE_TAG}
-          --tls=false
-      - /usr/bin/dumb-init
-      - /entrypoint
-    command:
-      - run
-      - --user=gitlab-runner
-      - --working-directory=${WORK_DIR}
+          --tls=false;
+        /usr/bin/dumb-init
+          /entrypoint
+            run
+            --user=gitlab-runner
+            --working-directory=${WORK_DIR}"
     environment:
       CONFIG_FILE:
       DOCKER_HOST: ${RUNNER_DOCKER_HOST}
