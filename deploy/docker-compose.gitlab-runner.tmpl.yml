@@ -23,7 +23,7 @@ services:
           /entrypoint
             run
             --user=gitlab-runner
-            --working-directory=${WORK_DIR}"
+            --working-directory=${WORK_DIR}
     environment:
       CONFIG_FILE:
       DOCKER_HOST: ${RUNNER_DOCKER_HOST}
