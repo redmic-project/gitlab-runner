@@ -10,12 +10,11 @@ stages:
 .prueba:
   stage: prueba
   image: docker:23.0.6-cli
-  variables:
-    DOCKER_HOST: tcp://localhost:2376
   script:
     - docker --version
     - docker info
     - docker network ls
+    - sleep 60
   tags:
     - custom-runner
 
