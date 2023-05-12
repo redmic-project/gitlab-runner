@@ -4,13 +4,17 @@ services:
   gitlab-runner-registrar:
     image: ${IMAGE_NAME}:${IMAGE_TAG}
     entrypoint: /bin/sh
-    command: >
-      -c "
-        gitlab-runner unregister --name \"${RUNNER_NAME}\";
-        gitlab-runner register;
-        sed -i \"s/concurrent.*/concurrent = ${CONCURRENT}/\" ${CONFIG_FILE}"
+    command:
+      - -c
+      - |
+        $$(echo "
+          gitlab-runner unregister --name \"$${RUNNER_NAME}\";
+          gitlab-runner register;
+          sed -i \"s/concurrent.*/concurrent = $${CONCURRENT}/\" $${CONFIG_FILE}
+        ")
     environment:
       CONFIG_FILE:
+      CONCURRENT:
       LOG_LEVEL:
       CI_SERVER_URL:
       REGISTRATION_TOKEN:
