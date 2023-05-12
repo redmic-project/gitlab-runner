@@ -4,7 +4,25 @@ include:
     file: '/deployment.yml'
 
 stages:
+  - prueba
   - deploy
+
+.prueba:
+  image: docker:23.0.6-cli
+  script:
+    - docker --version
+    - docker info
+    - docker network ls
+  tags:
+    - custom-runner
+
+prueba-dind:
+  extends: .prueba
+  services:
+    - docker:23.0.6-dind
+
+prueba-host:
+  extends: .prueba
 
 .lock-job: &lock-job
   rules:
