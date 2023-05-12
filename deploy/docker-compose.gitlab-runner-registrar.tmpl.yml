@@ -7,11 +7,9 @@ services:
     command:
       - -c
       - |
-        $$(echo "
-          gitlab-runner unregister --name \"$${RUNNER_NAME}\";
-          gitlab-runner register;
-          sed -i \"s/concurrent.*/concurrent = $${CONCURRENT}/\" $${CONFIG_FILE}
-        ")
+        gitlab-runner unregister --name $$(echo "$${RUNNER_NAME}");
+        gitlab-runner register;
+        $$(echo "sed -i \"s/concurrent.*/concurrent = $${CONCURRENT}/\" $${CONFIG_FILE}")
     environment:
       CONFIG_FILE:
       CONCURRENT:
