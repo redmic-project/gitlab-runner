@@ -30,8 +30,8 @@ gitlab-runner unregister --all-runners
 
 ## Environment isolation
 
-This service is configured to work with `docker` executor. By default, your CI jobs will run in a Docker container launched at the host system of `gitlab-runner` service, sharing the same Docker daemon and resources (networks, volumes...) with host and others CI jobs running concurrently.
+This service is configured to work with `docker` executor. By default, your CI jobs will run in a Docker container launched at the host system of `gitlab-runner` service, sharing the same Docker daemon and resources (networks, volumes...) with host and other CI jobs running concurrently.
 
 In some use cases this is a desired behaviour, because you need local resources from host or it's local network.
 
-To achieve isolation from host's Docker environment (and others CI jobs running concurrently), you should use `dind` (docker-in-docker) as a service, applied to your CI job at `.gitlab-ci.yml`. This way, launched container cannot see any external resources.
+To achieve isolation from host's Docker environment (and other CI jobs running concurrently), you should use `dind` (docker-in-docker) as a service, applied to your CI job at `.gitlab-ci.yml`. This way, launched container cannot see any external resources.
